@@ -1,221 +1,206 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { BiSend } from 'react-icons/bi';
-// import { OnPressKey } from "../Hooks/useOnKeyPress";
 import { IoMdAttach } from "react-icons/io";
-import loader from "../Assets/loader.svg";
-// import Typewriter from 'typewriter-effect';
-import { FiSidebar } from "react-icons/fi";
-import axios from 'axios';
-import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
-import gif from "../Assets/bot.gif"
-import botImage from "../Assets/image-removebg-preview.png"
+import { RxHamburgerMenu } from "react-icons/rx";
+import CreateAxiosInstance from '../axios/axios';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { ThreeDot } from 'react-loading-indicators';
+import { OnPressKey } from '../Hooks/useOnKeyPress';
+import { MyContext } from "../Context/MyContext"
+import bot from "../Assets/chatbot.png"
+import { IoAdd } from "react-icons/io5";
+import img from "../Assets/testing.gif"
 
-const Message = ({ text }) => {
-  return (
-    <div className='flex items-center p-4 bg-[#0A9D50] text-white font-semibold w-fit max-w-96 h-auto rounded-3xl max-w-7/12 px-6 py-2'>
-      <p>{text}</p>
-    </div>
-  );
-};
-
-const Response = ({ text, isfetched }) => {
-  const [isTypingDone, setIsTypingDone] = useState(false);
-  const chathistory = true
+const AnimatedText = ({ text, isTyping }) => {
+  const [displayedText, setDisplayedText] = useState('')
+  const intervalRef = useRef(null)
 
   useEffect(() => {
-    setIsTypingDone(false);
-  }, [text]);
+    if (isTyping) {
+      let i = 0;
+      intervalRef.current = setInterval(() => {
+        setDisplayedText(text.slice(0, i));
+        i++;
+        if (i > text.length) {
+          clearInterval(intervalRef.current);
+        }
+      }, 20);
+    } else {
+      setDisplayedText(text);
+    }
+    return () => clearInterval(intervalRef.current);
+  }, [text, isTyping]);
 
   return (
-    <>
-      {text === "" ? (
-        <div className='flex items-center gap-3'>
-          <img src={botImage} className='h-20 w-20 rounded-full' alt="" />
-          <img src={loader} alt="" className='h-16 w-16' />
-        </div>
-      ) : (
-        <>
-          <img src={botImage} className='h-20 w-20 rounded-full' alt="" />
-          <div className='flex ms-5 items-center p-4 bg-[#D9D9D9] text-black font-semibold max-w-96 w-fit h-auto rounded-3xl'>
-            {
-              chathistory ? (
-                <h1>{text}</h1>
-              ) : (
-                <>
-                  {/* <Typewriter
-                    onInit={(typewriter) => {
-                      typewriter
-                        .changeDelay(10)
-                        .changeCursor(' ')
-                        .typeString(text.replace(/<\/?[^>]+(>|$)/g, ""))
-                        .pauseFor(10)
-                        .callFunction(() => setIsTypingDone(true))
-                        .start();
-                    }}
-                  /> */}
-                </>
-              )
-            }
-          </div>
-        </>
-      )}
-    </>
+    <h1 className={`py-3 px-5 text-lg max-w-[38rem] rounded-3xl text-primary`}>
+      {displayedText}
+    </h1>
   );
 };
 
 const Chat = () => {
-
-//   const {setHistory} = useContext(MyContext)
-  const [message, setMessage] = useState([]);
-  const [text, setText] = useState('');
-  const [show, setShow] = useState(true)
-  const [history, sethistory] = useState([])
-  const [data, setData] = useState()
-  const [response, setResponse] = useState(data);
-  const [check, setCheck] = useState(false)
-  const [isfetched, setisfetched] = useState()
-
   const navigate = useNavigate()
+  const { id } = useParams();
+  const axiosInstance = CreateAxiosInstance();
+  const [siderBar, setSiderBar] = useState(localStorage.getItem('sidebar'))
+  const [message, setMessage] = useState([])
+  const [userMessage, setUserMessage] = useState("")
+  const [input, setInput] = useState(null)
+  const { login } = useContext(MyContext)
+  const [theme, setTheme] = useState("theme-focus-and-clarity")
+  const [history, setHistory] = useState([])
+  const [check, setCheck] = useState(false)
 
-  const chatContainerRef = useRef(null);
-  const params = useParams()
-  const { id } = params
   useEffect(() => {
-    setResponse(data);
-  }, [data]);
+    localStorage.setItem("sidebar", siderBar)
+  }, [siderBar])
 
-  const sendMessage = async () => {
-    if (text === "") return;
-    try {
-      const res = await axios.post('http://127.0.0.1:8000/chat/start_chat/', { message: text, session_id: id },
-        {
-          headers: {
-            Authorization: localStorage.getItem('access_token')
-              ? 'Bearer ' + localStorage.getItem('access_token')
-              : null,
-            'Content-Type': 'application/json',
-            accept: 'application/json',
-          }
-        }
-      );
-      const updated = res.data.message;
-      setData(updated);
-      setMessage([...message, { input: text, output: updated }]);
-      setText('');
-    //   setHistory(false);
-      setCheck(!check)
-    } catch (error) {
-      console.error('Error sending message:', error);
+  const handleMessage = (e) => {
+    setUserMessage(e.target.value);
+  };
+
+  const sendMessage = () => {
+    if (userMessage) {
+      const newMessage = userMessage;
+      setInput(userMessage)
+      setMessage(prevMessages => [...prevMessages, { user: newMessage, response: "", isTyping: false }])
+      setUserMessage("");
     }
   };
 
-  const handleChange = (e) => {
-    setText(e.target.value)
-    // setHistory(false)
-  }
+  OnPressKey(sendMessage, "Enter")
 
   useEffect(() => {
-    async function getChats() {
-      try {
-        const res = await axios.get('http://127.0.0.1:8000/chat/get_chat_session/', {
-          headers: {
-            Authorization: localStorage.getItem('access_token')
-              ? 'Bearer ' + localStorage.getItem('access_token')
-              : null,
-            'Content-Type': 'application/json',
-            accept: 'application/json',
-          },
-        });
-
-        const response = await axios.get(`http://127.0.0.1:8000/chat/get_chat/?session_id=${id}`, {
-          headers: {
-            Authorization: localStorage.getItem('access_token')
-              ? 'Bearer ' + localStorage.getItem('access_token')
-              : null,
-            'Content-Type': 'application/json',
-            accept: 'application/json',
-          },
-        });
-
-        const chat = response.data;
-        sethistory(res.data);
-        const processedMessages = chat.map(item => ({
-          input: item.user_message,
-          output: item.bot_response,
-        }));
-
-        setMessage(processedMessages);
-
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    getChats();
-  }, [check])
-
-  const chat = async() => {
-      const res = await axios.post('http://127.0.0.1:8000/chat/start-session/',{},{
-        headers: {
-          Authorization: localStorage.getItem('access_token')
-            ? 'Bearer ' + localStorage.getItem('access_token')
-            : null,
-          'Content-Type': 'application/json',
-          accept: 'application/json',
+    if (input) {
+      async function Message() {
+        try {
+          const res = await axiosInstance.post("chat/start_chat/", { message: input, session_id: id });
+          const botResponse = res.data.message;
+          setMessage(prevMessages => {
+            const updatedMessages = [...prevMessages];
+            updatedMessages[updatedMessages.length - 1].response = botResponse;
+            updatedMessages[updatedMessages.length - 1].isTyping = true;
+            return updatedMessages;
+          });
+          setCheck(!check)
+        } catch (error) {
+          console.log(error);
         }
-      })
-      navigate(`/chat/${res.data.session_id}`)
-    //   setHistory(false)
+      }
+      Message();
+    }
+  }, [input]);
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        const res = await axiosInstance.get("chat/get_chat_session/")
+        setHistory(res.data)
+      } catch (error) {
+        console.log(error);
+      }
+    } getData()
+  }, [check, setCheck])
+
+  useEffect(() => {
+    async function getChat() {
+      try {
+        const response = await axiosInstance.get(`chat/get_chat/?session_id=${id}`)
+        const processedMessages = response.data.map(item => ({
+          user: item.user_message,
+          response: item.bot_response,
+          isTyping: false
+        }));
+        setMessage(processedMessages)
+        console.log(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    } getChat()
+  }, [id])
+
+  console.log(message)
+
+
+  const newSession = async () => {
+    const res = await axiosInstance.post("chat/start-session/", {})
+    navigate(`/chat/${res.data.session_id}`)
   }
-
-  const handleChat = () => {
-    // setHistory(true)
-  }
-
-
-//   OnPressKey(sendMessage, "Enter");
 
   return (
-    <>
-      <div className='flex flex-row'>
-        <button className='absolute m-3 hover:bg-[#0A9D50] hover:text-white p-1 rounded-lg' onClick={() => { setShow(!show) }}><FiSidebar className='text-3xl' /></button>
-        <div className={`w-1/6 bg-[#E3FEF0] overflow-y-auto rounded-lg h-[38.9rem] ${show ? " " : "hidden"} px-5`}>
-        <div className='flex justify-end w-full mt-3'><button onClick={chat} className='w-4/5 p-1 hover:bg-green-400 hover:border-green-400 hover:text-white rounded-lg border-2 border-black'>New Chat</button></div>
-          <div className='transition-width duration-500  flex flex-col mt-10 text-lg gap-1'>
-            {[...history].reverse().map((d, i) => (
-              <NavLink to={`/chat/${d.session_id}`} onClick={handleChat} className={({ isActive }) => isActive ? `bg-[#3dd687] px-3 py-2 rounded-lg cursor-pointer` : "hover:bg-green-300 px-3 py-2 rounded-lg cursor-pointer"} key={i}>{d.summary === null ? (<img src={loader} alt="" className='h-8 w-10' />) : (<><div>{d.summary}</div></>)}</NavLink> 
+    <div className={`flex h-screen ${theme}`}>
+      <div className={`transition-all duration-300 ${siderBar ? 'w-60' : 'w-16'} hidden  h-full md:flex md:flex-col`}>
+        <div className={`p-4 cursor-pointer flex ${siderBar ? "flex-row" : "flex-col"} justify-between items-center`}>
+          <RxHamburgerMenu onClick={() => setSiderBar(!siderBar)} className='size-6' />
+          {siderBar ? (<button onClick={newSession}>New Chat</button>) : (<IoAdd onClick={newSession} className='mt-5 size-8' />)}
+        </div>
+        <div className={`mt-10 flex-1 overflow-y-auto`}>
+          <div className={`flex flex-col gap-1`}>
+            {siderBar && [...history].reverse().map((d) => (
+              <NavLink key={d.session_id} to={`/chat/${d.session_id}`} className={({ isActive }) => isActive ? "  mx-3  p-3 rounded-lg active duration-500 text-theme" : "hover:bg-hover mx-3 p-3 rounded-lg "}>{d.summary}</NavLink>
             ))}
           </div>
         </div>
-        <div className={`${show ? "w-5/6" : "w-full"}`}>
-          <div className='w-full'>
-            <div ref={chatContainerRef} className='flex h-[33rem] py-5 px-80 overflow-y-auto flex-col'>
-              {
-                message.length === 0 && (
-                  <div className='flex justify-start flex-col gap-y-5 items-center h-[33rem]'>
-                    <img src={gif} alt="" className='h-60' />
-                    <div className='flex justify-evenly w-full'>
-                      <h1 className='text-2xl text-[#3dd687] font-semibold'>How Can I Help You!</h1>
-                    </div>
+      </div>
+      <div className={`flex-1 flex flex-col bg-theme`}>
+        <div className='h-20 flex flex-row justify-end px-10 items-center shadow-md rounded-b-xl'>
+          <button onClick={() => { setTheme("theme-comfort-and-warmth") }} className='border-2 mx-5 font-semibold p-2 rounded-lg text-theme'>Change Theme</button>
+          {
+            login ? (
+              <h1 className='bg-white size-10 rounded-full'></h1>
+            ) : (
+              <button onClick={() => navigate("/login")} className='border-2 text-theme'>Login</button>
+            )
+          }
+        </div>
+        <div className='flex-1 overflow-y-auto'>
+          <div className='flex items-center flex-col gap-y-2 p-4'>
+            {message.length > 0 ?
+              message.map((d, i) => (
+                <div key={i} className='lg:w-7/12'>
+                  <div className='flex justify-end my-3'>
+                    <h1 className='card text-lg py-3 px-5 max-w-[30rem] rounded-3xl text-theme'>{d.user}</h1>
                   </div>
-                )
-              }
-              {message.map((d, i) => (
-                <div key={i} className=''>
-                  <div className='flex justify-end my-4'><Message text={d.input} /></div>
-                  <div className='flex justify-start my-4'><Response text={d.output} isfetched={isfetched} /></div>
+                  {d.response === "" ? (
+                    <div className='flex justify-start flex-row items-start'>
+                      <img src={bot} className='size-12' alt="" />
+                      <div className='lg:ms-4'><ThreeDot variant="pulsate" color="#484848" size="medium" text="" textColor="" /></div>
+                    </div>
+                  ) : (
+                    <div className='flex text-theme justify-start flex-row items-start'>
+                      <img src={bot} className='size-12' alt="" />
+                      <div className='flex flex-col items-start'>
+                        <AnimatedText text={d.response} isTyping={d.isTyping} />
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-            <div className='w-full flex justify-center items-center flex-row gap-x-2'>
-              <IoMdAttach className='text-3xl text-gray-700 hover:text-black cursor-pointer' />
-              <input type="text" onChange={(e)=>handleChange(e)} className={`focus:outline-none w-5/12 px-4  py-3 rounded-full bg-[#FEE9D9]`} value={text} placeholder='Type Message' />
-              <BiSend className='text-3xl text-gray-700 hover:text-black cursor-pointer' onClick={sendMessage} />
-            </div>
+              )) : (
+                <div className='flex justify-center items-center flex-col '>
+                  <img src={img} alt="" className='size-40' />
+                  <h1 className='text-2xl mt-5'>Hello <span className='font-bold'>Dhruv</span>! how can i help you today </h1>
+                </div>
+              )
+            }
           </div>
         </div>
+        <div className="w-full flex justify-center items-center flex-row gap-x-2 p-4">
+          <IoMdAttach className="text-3xl text-theme cursor-pointer" />
+          <input
+            type="text"
+            className={`focus:outline-none placeholder:text-gray-600 lg:w-7/12 w-4/5 px-4 py-4 rounded-full ${theme} input-container`}
+            placeholder="Type Message"
+            onChange={handleMessage}
+            value={userMessage}
+            style={{
+              backgroundColor: 'var(--input-bg-color)',
+              color: 'black'
+            }}
+          />
+          <BiSend onClick={sendMessage} className="text-3xl text-theme cursor-pointer" />
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

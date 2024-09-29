@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 const Navbar = () => {
+  
   return (
-    <div>
+    <div className='bg-red-400 h-20'>
       Navbar
     </div>
   )

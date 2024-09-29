@@ -1,3 +1,375 @@
+/* Import Tailwind base, components, and utilities */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Root Variables for Default Colors */
+:root {
+  --bg-color: #e0f7fa; /* Default background */
+  --text-color: #005662; /* Default text color */
+}
+
+/* Tailwind Overrides for Background and Text Color */
+.bg-theme {
+  background-color: var(--bg-color);
+}
+
+.text-theme {
+  color: var(--text-color);
+}
+
+/* Button Styles */
+button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  cursor: pointer;
+}
+
+/* Card Styles */
+.card {
+  padding: 15px;
+  border-radius: 10px;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Text Styles */
+.text-primary {
+  transition: color 0.5s ease;
+}
+
+/* Themes */
+
+/* Calm & Tranquil */
+.theme-calm-and-tranquil {
+  background: linear-gradient(180deg, #cfeffd, #a1dbf5);
+  color: #3a3b3c;
+  font-family: 'Georgia', serif;
+}
+
+.theme-calm-and-tranquil button {
+  background-color: #a1dbf5;
+  color: #005662;
+}
+
+.theme-calm-and-tranquil .card {
+  background-color: #cfeffd;
+  color: #005662;
+}
+
+.theme-calm-and-tranquil .text-primary {
+  color: #005662;
+}
+
+.theme-calm-and-tranquil .hover:hover {
+  background-color: #b0e8f4;
+  color: #003a43;
+}
+
+.theme-calm-and-tranquil .active {
+  background-color: #8ecde3;
+  color: #002a31;
+}
+
+.theme-calm-and-tranquil .input-container {
+  --input-bg-color: #333;
+  --input-text-color: #cfeffd;
+  --icon-color: #a1dbf5;
+}
+
+/* Energize & Uplift */
+.theme-energize-and-uplift {
+  background: linear-gradient(180deg, #ffe135, #ffba08);
+  color: #000000;
+  font-family: 'Helvetica', sans-serif;
+}
+
+.theme-energize-and-uplift button {
+  background-color: #ffba08;
+  color: #000;
+}
+
+.theme-energize-and-uplift .card {
+  background-color: #ffe135;
+  color: #000;
+}
+
+.theme-energize-and-uplift .text-primary {
+  color: #000;
+}
+
+.theme-energize-and-uplift .hover:hover {
+  background-color: #fdbf24;
+  color: #111111;
+}
+
+.theme-energize-and-uplift .active {
+  background-color: #e0a606;
+  color: #000;
+}
+
+.theme-energize-and-uplift .input-container {
+  --input-bg-color: #333;
+  --input-text-color: #ffba08;
+  --icon-color: #ffe135;
+}
+
+/* Soothing & Reflective */
+.theme-soothing-and-reflective {
+  background: linear-gradient(180deg, #f3e5f5, #e1bee7);
+  color: #5c6bc0;
+  font-family: 'Roboto', sans-serif;
+}
+
+.theme-soothing-and-reflective button {
+  background-color: #e1bee7;
+  color: #5c6bc0;
+}
+
+.theme-soothing-and-reflective .card {
+  background-color: #f3e5f5;
+  color: #5c6bc0;
+}
+
+.theme-soothing-and-reflective .text-primary {
+  color: #5c6bc0;
+}
+
+.theme-soothing-and-reflective .hover:hover {
+  background-color: #d4bbd8;
+  color: #4a599a;
+}
+
+.theme-soothing-and-reflective .active {
+  background-color: #c4a5c4;
+  color: #3a4a84;
+}
+
+.theme-soothing-and-reflective .input-container {
+  --input-bg-color: #333;
+  --input-text-color: #e1bee7;
+  --icon-color: #f3e5f5;
+}
+
+/* Comfort & Warmth */
+.theme-comfort-and-warmth {
+  background: linear-gradient(180deg, #ffccbc, #ffab91);
+  color: #795548;
+  font-family: 'Comfortaa', sans-serif;
+}
+
+.theme-comfort-and-warmth button {
+  background-color: #ffab91;
+  color: #795548;
+}
+
+.theme-comfort-and-warmth .card {
+  background-color: #ffccbc;
+  color: #795548;
+}
+
+.theme-comfort-and-warmth .text-primary {
+  color: #795548;
+}
+
+.theme-comfort-and-warmth .hover:hover {
+  background-color: #ff9b80;
+  color: #6b4b42;
+}
+
+.theme-comfort-and-warmth .active {
+  background-color: #e07a6f;
+  color: #5c4036;
+}
+
+.theme-comfort-and-warmth .input-container {
+  --input-bg-color: #333;
+  --input-text-color: #ffab91;
+  --icon-color: #ffccbc;
+}
+
+/* Focus & Clarity */
+.theme-focus-and-clarity {
+  background: linear-gradient(180deg, #e3f2fd, #bbdefb);
+  color: #0288d1;
+  font-family: 'Futura', sans-serif;
+}
+
+.theme-focus-and-clarity button {
+  background-color: #bbdefb;
+  color: #0288d1;
+}
+
+.theme-focus-and-clarity .card {
+  background-color: #e3f2fd;
+  color: #0288d1;
+}
+
+.theme-focus-and-clarity .text-primary {
+  color: #0288d1;
+}
+
+.theme-focus-and-clarity .hover:hover {
+  background-color: #a8d2f6;
+  color: #0268a1;
+}
+
+.theme-focus-and-clarity .active {
+  background-color: #90c2e8;
+  color: #015881;
+}
+
+.theme-focus-and-clarity .input-container {
+  --input-bg-color: #333;
+  --input-text-color: #bbdefb;
+  --icon-color: #e3f2fd;
+}
+
+/* Inspiration & Motivation */
+.theme-inspiration-and-motivation {
+  background: linear-gradient(180deg, #ce93d8, #ab47bc);
+  color: #4a148c;
+  font-family: 'Impact', sans-serif;
+}
+
+.theme-inspiration-and-motivation button {
+  background-color: #ab47bc;
+  color: #4a148c;
+}
+
+.theme-inspiration-and-motivation .card {
+  background-color: #ce93d8;
+  color: #4a148c;
+}
+
+.theme-inspiration-and-motivation .text-primary {
+  color: #4a148c;
+}
+
+.theme-inspiration-and-motivation .hover:hover {
+  background-color: #b544b3;
+  color: #3b1173;
+}
+
+.theme-inspiration-and-motivation .active {
+  background-color: #9f3b9d;
+  color: #331065;
+}
+
+.theme-inspiration-and-motivation .input-container {
+  --input-bg-color: #333;
+  --input-text-color: #ab47bc;
+  --icon-color: #ce93d8;
+}
+
+/* Hope & Optimism */
+.theme-hope-and-optimism {
+  background: linear-gradient(180deg, #fff9c4, #ffeb3b);
+  color: #388e3c;
+  font-family: 'Nunito', sans-serif;
+}
+
+.theme-hope-and-optimism button {
+  background-color: #ffeb3b;
+  color: #388e3c;
+}
+
+.theme-hope-and-optimism .card {
+  background-color: #fff9c4;
+  color: #388e3c;
+}
+
+.theme-hope-and-optimism .text-primary {
+  color: #388e3c;
+}
+
+.theme-hope-and-optimism .hover:hover {
+  background-color: #f0d933;
+  color: #30722f;
+}
+
+.theme-hope-and-optimism .active {
+  background-color: #d4be30;
+  color: #285929;
+}
+
+.theme-hope-and-optimism .input-container {
+  --input-bg-color: #333;
+  --input-text-color: #ffeb3b;
+  --icon-color: #fff9c4;
+}
+
+/* Peace & Balance */
+.theme-peace-and-balance {
+  background: linear-gradient(180deg, #c8e6c9, #a5d6a7);
+  color: #2e7d32;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.theme-peace-and-balance button {
+  background-color: #a5d6a7;
+  color: #2e7d32;
+}
+
+.theme-peace-and-balance .card {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.theme-peace-and-balance .text-primary {
+  color: #2e7d32;
+}
+
+.theme-peace-and-balance .hover:hover {
+  background-color: #94c59e;
+  color: #28682b;
+}
+
+.theme-peace-and-balance .active {
+  background-color: #7eb389;
+  color: #235824;
+}
+
+.theme-peace-and-balance .input-container {
+  --input-bg-color: #333;
+  --input-text-color: #a5d6a7;
+  --icon-color: #c8e6c9;
+}
+
+/* Joy & Creativity */
+.theme-joy-and-creativity {
+  background: linear-gradient(180deg, #ff80ab, #ff4081);
+  color: #880e4f;
+  font-family: 'Comic Sans MS', sans-serif;
+}
+
+.theme-joy-and-creativity button {
+  background-color: #ff4081;
+  color: #880e4f;
+}
+
+.theme-joy-and-creativity .card {
+  background-color: #ff80ab;
+  color: #880e4f;
+}
+
+.theme-joy-and-creativity .text-primary {
+  color: #880e4f;
+}
+
+.theme-joy-and-creativity .hover:hover {
+  background-color: #fa4a88;
+  color: #6f0c3d;
+}
+
+.theme-joy-and-creativity .active {
+  background-color: #f2336f;
+  color: #5e0a32;
+}
+
+.theme-joy-and-creativity .input-container {
+  --input-bg-color: #333;
+  --input-text-color: #ff4081;
+  --icon-color: #ff80ab;
+}

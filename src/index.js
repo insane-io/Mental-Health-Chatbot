@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -6,22 +6,30 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import Home from './Pages/Home';
 import BaseLayout from "./BaseLayout"
 import Chat from './Pages/Chat';
+import Login from './Pages/Login';
+import {MyContext, UserProvider} from "./Context/MyContext"
+import Profile from './Pages/Profile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path='/' element={<BaseLayout />} >
         <Route path='' element={<Home />} />
-        <Route path='chat' element={<Chat/>} />
+        <Route path='chat/:id' element={<Chat/>} />
+        <Route path='login' element={<Login/>} />
+        <Route path='profile' element={<Profile/>} />
       </Route>
     </Route>
   )
 )
 root.render(
   <React.StrictMode>
+    <UserProvider>
     <RouterProvider router={router} />
+    </UserProvider>
   </React.StrictMode>
 );
 

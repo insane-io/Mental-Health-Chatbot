@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import CreateAxiosInstance from '../axios/axios';
+import { Modal } from '../Components/Modal';
 
 const Appointment = () => {
     const [selectedSection, setSelectedSection] = useState('therapist');
@@ -23,6 +24,19 @@ const Appointment = () => {
         }
         getData()
     }, [])
+
+    const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState('');
+
+  const handleOpenModal = (content) => {
+    setModalContent(content);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalContent('');
+  };
 
     return (
         <div className='mt-6 px-20'>
@@ -80,7 +94,7 @@ const Appointment = () => {
                                     <p className="text-gray-700">{d.time}</p>
                                 </div>
                                 <div className="mt-6 flex justify-between">
-                                    <button className="bg-orange-500 text-white py-2 px-4 rounded-lg">
+                                    <button className="bg-orange-500 text-white py-2 px-4 rounded-lg" onClick={() => handleOpenModal('Notes for Profile 1')}>
                                         Book Session
                                     </button>
                                 </div>
@@ -119,7 +133,9 @@ const Appointment = () => {
                             ))}
                         </div>
                     </div>
+                    
                 </div>
+                
             ) : (
                 <div>
                     <h2 className='text-2xl font-bold'>Education Section</h2>
@@ -157,6 +173,7 @@ const Appointment = () => {
                     </div>
                 </div>
             )}
+            <Modal handleCloseModal={handleCloseModal}  modalContent={modalContent} showModal={showModal}/>
         </div>
     );
 };

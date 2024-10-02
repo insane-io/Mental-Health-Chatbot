@@ -18,6 +18,17 @@
   color: var(--text-color);
 }
 
+/* General Styles */
+.app-container {
+  transition: background-color 0.5s ease, color 0.5s ease;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Button Styles */
 button {
   padding: 10px 20px;
@@ -31,6 +42,7 @@ button {
 .card {
   padding: 15px;
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
@@ -62,22 +74,6 @@ button {
   color: #005662;
 }
 
-.theme-calm-and-tranquil .hover:hover {
-  background-color: #b0e8f4;
-  color: #003a43;
-}
-
-.theme-calm-and-tranquil .active {
-  background-color: #8ecde3;
-  color: #002a31;
-}
-
-.theme-calm-and-tranquil .input-container {
-  --input-bg-color: #333;
-  --input-text-color: #cfeffd;
-  --icon-color: #a1dbf5;
-}
-
 /* Energize & Uplift */
 .theme-energize-and-uplift {
   background: linear-gradient(180deg, #ffe135, #ffba08);
@@ -97,22 +93,6 @@ button {
 
 .theme-energize-and-uplift .text-primary {
   color: #000;
-}
-
-.theme-energize-and-uplift .hover:hover {
-  background-color: #fdbf24;
-  color: #111111;
-}
-
-.theme-energize-and-uplift .active {
-  background-color: #e0a606;
-  color: #000;
-}
-
-.theme-energize-and-uplift .input-container {
-  --input-bg-color: #333;
-  --input-text-color: #ffba08;
-  --icon-color: #ffe135;
 }
 
 /* Soothing & Reflective */
@@ -136,22 +116,6 @@ button {
   color: #5c6bc0;
 }
 
-.theme-soothing-and-reflective .hover:hover {
-  background-color: #d4bbd8;
-  color: #4a599a;
-}
-
-.theme-soothing-and-reflective .active {
-  background-color: #c4a5c4;
-  color: #3a4a84;
-}
-
-.theme-soothing-and-reflective .input-container {
-  --input-bg-color: #333;
-  --input-text-color: #e1bee7;
-  --icon-color: #f3e5f5;
-}
-
 /* Comfort & Warmth */
 .theme-comfort-and-warmth {
   background: linear-gradient(180deg, #ffccbc, #ffab91);
@@ -171,22 +135,6 @@ button {
 
 .theme-comfort-and-warmth .text-primary {
   color: #795548;
-}
-
-.theme-comfort-and-warmth .hover:hover {
-  background-color: #ff9b80;
-  color: #6b4b42;
-}
-
-.theme-comfort-and-warmth .active {
-  background-color: #e07a6f;
-  color: #5c4036;
-}
-
-.theme-comfort-and-warmth .input-container {
-  --input-bg-color: #333;
-  --input-text-color: #ffab91;
-  --icon-color: #ffccbc;
 }
 
 /* Focus & Clarity */
@@ -210,22 +158,6 @@ button {
   color: #0288d1;
 }
 
-.theme-focus-and-clarity .hover:hover {
-  background-color: #a8d2f6;
-  color: #0268a1;
-}
-
-.theme-focus-and-clarity .active {
-  background-color: #90c2e8;
-  color: #015881;
-}
-
-.theme-focus-and-clarity .input-container {
-  --input-bg-color: #333;
-  --input-text-color: #bbdefb;
-  --icon-color: #e3f2fd;
-}
-
 /* Inspiration & Motivation */
 .theme-inspiration-and-motivation {
   background: linear-gradient(180deg, #ce93d8, #ab47bc);
@@ -245,22 +177,6 @@ button {
 
 .theme-inspiration-and-motivation .text-primary {
   color: #4a148c;
-}
-
-.theme-inspiration-and-motivation .hover:hover {
-  background-color: #b544b3;
-  color: #3b1173;
-}
-
-.theme-inspiration-and-motivation .active {
-  background-color: #9f3b9d;
-  color: #331065;
-}
-
-.theme-inspiration-and-motivation .input-container {
-  --input-bg-color: #333;
-  --input-text-color: #ab47bc;
-  --icon-color: #ce93d8;
 }
 
 /* Hope & Optimism */
@@ -284,22 +200,6 @@ button {
   color: #388e3c;
 }
 
-.theme-hope-and-optimism .hover:hover {
-  background-color: #f0d933;
-  color: #30722f;
-}
-
-.theme-hope-and-optimism .active {
-  background-color: #d4be30;
-  color: #285929;
-}
-
-.theme-hope-and-optimism .input-container {
-  --input-bg-color: #333;
-  --input-text-color: #ffeb3b;
-  --icon-color: #fff9c4;
-}
-
 /* Peace & Balance */
 .theme-peace-and-balance {
   background: linear-gradient(180deg, #c8e6c9, #a5d6a7);
@@ -321,55 +221,66 @@ button {
   color: #2e7d32;
 }
 
-.theme-peace-and-balance .hover:hover {
-  background-color: #94c59e;
-  color: #28682b;
-}
-
-.theme-peace-and-balance .active {
-  background-color: #7eb389;
-  color: #235824;
-}
-
-.theme-peace-and-balance .input-container {
-  --input-bg-color: #333;
-  --input-text-color: #a5d6a7;
-  --icon-color: #c8e6c9;
-}
-
-/* Joy & Creativity */
-.theme-joy-and-creativity {
+/* Joy & Playfulness */
+.theme-joy-and-playfulness {
   background: linear-gradient(180deg, #ff80ab, #ff4081);
-  color: #880e4f;
+  color: #ff4081;
   font-family: 'Comic Sans MS', sans-serif;
 }
 
-.theme-joy-and-creativity button {
+.theme-joy-and-playfulness button {
   background-color: #ff4081;
-  color: #880e4f;
+  color: #fff;
 }
 
-.theme-joy-and-creativity .card {
+.theme-joy-and-playfulness .card {
   background-color: #ff80ab;
-  color: #880e4f;
+  color: #fff;
 }
 
-.theme-joy-and-creativity .text-primary {
-  color: #880e4f;
+.theme-joy-and-playfulness .text-primary {
+  color: #fff;
 }
 
-.theme-joy-and-creativity .hover:hover {
-  background-color: #fa4a88;
-  color: #6f0c3d;
+/* Mindfulness & Serenity */
+.theme-mindfulness-and-serenity {
+  background: linear-gradient(180deg, #e0f7fa, #80deea);
+  color: #00838f;
+  font-family: 'Lora', serif;
 }
 
-.theme-joy-and-creativity .active {
-  background-color: #f2336f;
-  color: #5e0a32;
+.theme-mindfulness-and-serenity button {
+  background-color: #80deea;
+  color: #00838f;
 }
 
-.theme-joy-and-creativity .input-container {
-  --input-bg-color: #333;
-  --input-text-color: #ff4081;
-  --icon-color: #ff80ab;
+.theme-mindfulness-and-serenity .card {
+  background-color: #e0f7fa;
+  color: #00838f;
 }
+
+.theme-mindfulness-and-serenity .text-primary {
+  color: #00838f;
+}
+
+/* Adventure & Exploration */
+.theme-adventure-and-exploration {
+  background: linear-gradient(180deg, #ffcc80, #ffb74d);
+  color: #6d4c41;
+  font-family: 'Merriweather', serif;
+}
+
+.theme-adventure-and-exploration button {
+  background-color: #ffb74d;
+  color: #6d4c41;
+}
+
+.theme-adventure-and-exploration .card {
+  background-color: #ffcc80;
+  color: #6d4c41;
+}
+
+.theme-adventure-and-exploration .text-primary {
+  color: #6d4c41;
+}
+

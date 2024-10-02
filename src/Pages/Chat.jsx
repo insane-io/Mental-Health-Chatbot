@@ -93,7 +93,7 @@ const Chat = () => {
   const [userMessage, setUserMessage] = useState("")
   const [input, setInput] = useState(null)
   const { login } = useContext(MyContext)
-  const [theme, setTheme] = useState("theme-joy-and-creativity")
+  const [theme, setTheme] = useState("theme-focus-and-clarity")
   const [history, setHistory] = useState([])
   const [check, setCheck] = useState(false)
   const [voice, setvoice] = useState(false)
@@ -102,10 +102,6 @@ const Chat = () => {
   const mainTheme = useSelector((state) => state.theme)
 
   console.log(mainTheme)
-
-  useEffect(()=>{
-    mainTheme === "Dark" ? setTheme('dark') : setTheme('theme-calm-and-tranquil')    
-  })
 
   const { listen, stop } = useSpeechRecognition({
     onResult: (result) => {
@@ -211,7 +207,7 @@ const Chat = () => {
         <div className={`mt-10 flex-1 overflow-y-auto`}>
           <div className={`flex flex-col gap-1`}>
             {siderBar && [...history].reverse().map((d) => (
-              <NavLink key={d.session_id} to={`/chat/${d.session_id}`} className={({ isActive }) => isActive ? `  mx-3  p-3 rounded-lg ${mainTheme === "Dark" ? "bg-[#343541]" : 'active'} duration-500 text-theme` : `hover:bg-hover mx-3 p-3 rounded-lg `}>{d.summary}</NavLink>
+              <NavLink key={d.session_id} to={`/chat/${d.session_id}`} className={({ isActive }) => isActive ? `  mx-3  p-3 rounded-lg ${mainTheme === "Dark" ? "bg-[#343541]" : `active`} duration-500 text-theme` : `hover:bg-hover mx-3 p-3 rounded-lg text-theme`}>{d.summary}</NavLink>
             ))}
           </div>
         </div>
@@ -223,7 +219,6 @@ const Chat = () => {
             onClick={() => setSettings(true)} >
             <CiSettings className="size-8" />
           </div>
-          <button onClick={() => { setTheme("theme-focus-and-clarity") }} className='border-2 mx-5 font-semibold p-2 rounded-lg text-theme'>Change Theme</button>
           {
             login ? (
               <h1 className='bg-white size-10 rounded-full'></h1>
@@ -238,10 +233,12 @@ const Chat = () => {
               message.map((d, i) => (
                 <div key={i} className='lg:w-7/12'>
                   <div className='flex justify-end my-3'>
-                    <h1 className={`${mainTheme === "Dark" ? "bg-[#2f2f2f]" : "bg-theme"} text-lg py-3 px-5 max-w-[30rem] rounded-3xl text-theme`}>{d.user}</h1>
+                    <h1 className={`text-lg py-3 px-5 max-w-[30rem] rounded-3xl ${mainTheme === "Dark" ? "bg-[#2f2f2f] text-white" : `${theme} text-theme` }`}>
+                      {d.user}
+                    </h1>
                   </div>
                   {d.response === "" ? (
-                    <div className='flex justify-start flex-row items-start'>
+                    <div className='flex justify-start flex-row'>
                       <img src={bot} className='size-12' alt="" />
                       <div className='lg:ms-4'><ThreeDot variant="pulsate" color="#484848" size="medium" text="" textColor="" /></div>
                     </div>
@@ -277,10 +274,6 @@ const Chat = () => {
             placeholder="Type Message"
             onChange={handleMessage}
             value={userMessage}
-            // style={{
-            //   backgroundColor: 'var(--input-bg-color)',
-            //   color: 'black'
-            // }}
           />
           <BiSend onClick={sendMessage} className="text-3xl text-theme cursor-pointer" />
         </div>

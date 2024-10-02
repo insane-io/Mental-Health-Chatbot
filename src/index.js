@@ -10,7 +10,7 @@ import Login from './Pages/Login';
 import Profile from './Pages/Profile';
 import { Provider } from 'react-redux';
 import store from "./Redux/store"
-
+import Appointment from './Pages/Appointment';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -20,10 +20,11 @@ const router = createBrowserRouter(
     <Route>
       <Route path='/' element={<BaseLayout />} >
         <Route path='' element={<Home />} />
-        <Route path='chat/:id' element={<Chat />} />
-        <Route path='login' element={<Login />} />
-        <Route path='profile' element={<Profile />} />
+        <Route path='appointment' element={<Appointment />} />
+        <Route path='login' element={<Login/>} />
+        <Route path='profile' element={<Profile/>} />
       </Route>
+      <Route path='chat/:id' element={<Chat/>} />
     </Route>
   )
 )

@@ -10,8 +10,6 @@ const Modal = ({ onClose }) => {
     const selectedTheme = e.target.value;
     dispatch(setTheme(selectedTheme));
   };
-
-  // Define available themes
   const themes = ['Emotions', 'Dark'];
 
   return (
@@ -23,15 +21,13 @@ const Modal = ({ onClose }) => {
           &times;
         </button>
         <h1 className="text-lg font-semibold">Settings</h1>
-        
         <label htmlFor="theme" className="block mb-2">Select Theme</label>
         <select
-          value={theme} // Set the selected theme as the current value
+          value={theme} 
           onChange={changeTheme}
           name="theme"
           className={`border-2 p-2 w-full ${theme === "Dark" ? "bg-[#171717]" : "bg-white"}`}
         >
-          {/* Display the selected theme first */}
           {themes.map((t) => (
             <option key={t} value={t}>
               {t}

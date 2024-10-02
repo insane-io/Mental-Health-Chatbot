@@ -10,10 +10,21 @@ import { MyContext } from "../Context/MyContext"
 import bot from "../Assets/chatbot.png"
 import { IoAdd } from "react-icons/io5";
 import img from "../Assets/testing.gif"
+import { useSpeechRecognition } from 'react-speech-kit';
+import { FaMicrophone } from "react-icons/fa";
+import { FaRegCircleStop } from "react-icons/fa6";
+import { HiOutlineSpeakerWave } from "react-icons/hi2";
+import { CiSettings } from "react-icons/ci";
+import Settings from "../Components/Settings"
+import { useSelector } from 'react-redux';
+
 
 const AnimatedText = ({ text, isTyping }) => {
-  const [displayedText, setDisplayedText] = useState('')
-  const intervalRef = useRef(null)
+  const [displayedText, setDisplayedText] = useState('');
+  const [animationComplete, setAnimationComplete] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const intervalRef = useRef(null);
+  const speechRef = useRef(null);
 
   useEffect(() => {
     if (isTyping) {
@@ -23,17 +34,52 @@ const AnimatedText = ({ text, isTyping }) => {
         i++;
         if (i > text.length) {
           clearInterval(intervalRef.current);
+          setAnimationComplete(true);
         }
       }, 20);
     } else {
       setDisplayedText(text);
+      setAnimationComplete(true);
     }
     return () => clearInterval(intervalRef.current);
   }, [text, isTyping]);
 
+  const handleStartSpeech = () => {
+    if (!isSpeaking) {
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = 'en-US';
+      speech.onend = () => setIsSpeaking(false);
+      speechSynthesis.speak(speech);
+      setIsSpeaking(true);
+      speechRef.current = speech;
+    }
+  };
+
+  const handleStopSpeech = () => {
+    if (isSpeaking) {
+      speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+  };
+
   return (
-    <h1 className={`py-3 px-5 text-lg max-w-[38rem] rounded-3xl text-primary`}>
+    <h1 className={`py-3 px-5 text-lg max-w-[38rem] rounded-3xl text-primary flex flex-col`}>
       {displayedText}
+      {animationComplete && (
+        <>
+          {!isSpeaking ? (
+            <HiOutlineSpeakerWave
+              className='cursor-pointer transition-all ease-in-out delay-700'
+              onClick={handleStartSpeech}
+            />
+          ) : (
+            <FaRegCircleStop
+              className='cursor-pointer transition-all ease-in-out delay-700 text-red-600'
+              onClick={handleStopSpeech}
+            />
+          )}
+        </>
+      )}
     </h1>
   );
 };
@@ -47,9 +93,35 @@ const Chat = () => {
   const [userMessage, setUserMessage] = useState("")
   const [input, setInput] = useState(null)
   const { login } = useContext(MyContext)
-  const [theme, setTheme] = useState("theme-focus-and-clarity")
+  const [theme, setTheme] = useState("theme-joy-and-creativity")
   const [history, setHistory] = useState([])
   const [check, setCheck] = useState(false)
+  const [voice, setvoice] = useState(false)
+  const [settings, setSettings] = useState(false)
+
+  const mainTheme = useSelector((state) => state.theme)
+
+  console.log(mainTheme)
+
+  useEffect(()=>{
+    mainTheme === "Dark" ? setTheme('dark') : setTheme('theme-calm-and-tranquil')    
+  })
+
+  const { listen, stop } = useSpeechRecognition({
+    onResult: (result) => {
+      setUserMessage(result)
+    }
+  })
+
+  const startvoice = () => {
+    setvoice(true)
+    listen()
+  }
+
+  const stopvoice = () => {
+    setvoice(false)
+    stop()
+  }
 
   useEffect(() => {
     localStorage.setItem("sidebar", siderBar)
@@ -65,6 +137,7 @@ const Chat = () => {
       setInput(userMessage)
       setMessage(prevMessages => [...prevMessages, { user: newMessage, response: "", isTyping: false }])
       setUserMessage("");
+      stopvoice()
     }
   };
 
@@ -128,7 +201,8 @@ const Chat = () => {
   }
 
   return (
-    <div className={`flex h-screen ${theme}`}>
+    <div className={`flex h-screen ${mainTheme === "Dark" ? "bg-[#171717] text-white" : theme}`}>
+      {settings && <Settings onClose={() => setSettings(false)} />}
       <div className={`transition-all duration-300 ${siderBar ? 'w-60' : 'w-16'} hidden  h-full md:flex md:flex-col`}>
         <div className={`p-4 cursor-pointer flex ${siderBar ? "flex-row" : "flex-col"} justify-between items-center`}>
           <RxHamburgerMenu onClick={() => setSiderBar(!siderBar)} className='size-6' />
@@ -137,14 +211,19 @@ const Chat = () => {
         <div className={`mt-10 flex-1 overflow-y-auto`}>
           <div className={`flex flex-col gap-1`}>
             {siderBar && [...history].reverse().map((d) => (
-              <NavLink key={d.session_id} to={`/chat/${d.session_id}`} className={({ isActive }) => isActive ? "  mx-3  p-3 rounded-lg active duration-500 text-theme" : "hover:bg-hover mx-3 p-3 rounded-lg "}>{d.summary}</NavLink>
+              <NavLink key={d.session_id} to={`/chat/${d.session_id}`} className={({ isActive }) => isActive ? `  mx-3  p-3 rounded-lg ${mainTheme === "Dark" ? "bg-[#343541]" : 'active'} duration-500 text-theme` : `hover:bg-hover mx-3 p-3 rounded-lg `}>{d.summary}</NavLink>
             ))}
           </div>
         </div>
       </div>
-      <div className={`flex-1 flex flex-col bg-theme`}>
-        <div className='h-20 flex flex-row justify-end px-10 items-center shadow-md rounded-b-xl'>
-          <button onClick={() => { setTheme("theme-comfort-and-warmth") }} className='border-2 mx-5 font-semibold p-2 rounded-lg text-theme'>Change Theme</button>
+      <div className={`flex-1 flex flex-col `}>
+        <div className={`${mainTheme === "Dark" ? "bg-[#171717]" : theme} h-20 flex flex-row justify-end px-10 items-center shadow-md`}>
+          <div
+            className="p-2 rounded-full hover:scale-125 transition-all"
+            onClick={() => setSettings(true)} >
+            <CiSettings className="size-8" />
+          </div>
+          <button onClick={() => { setTheme("theme-focus-and-clarity") }} className='border-2 mx-5 font-semibold p-2 rounded-lg text-theme'>Change Theme</button>
           {
             login ? (
               <h1 className='bg-white size-10 rounded-full'></h1>
@@ -153,13 +232,13 @@ const Chat = () => {
             )
           }
         </div>
-        <div className='flex-1 overflow-y-auto'>
+        <div className={`flex-1 overflow-y-auto ${mainTheme === "Dark" ? "bg-[#212121]" : "bg-theme"}`}>
           <div className='flex items-center flex-col gap-y-2 p-4'>
             {message.length > 0 ?
               message.map((d, i) => (
                 <div key={i} className='lg:w-7/12'>
                   <div className='flex justify-end my-3'>
-                    <h1 className='card text-lg py-3 px-5 max-w-[30rem] rounded-3xl text-theme'>{d.user}</h1>
+                    <h1 className={`${mainTheme === "Dark" ? "bg-[#2f2f2f]" : "bg-theme"} text-lg py-3 px-5 max-w-[30rem] rounded-3xl text-theme`}>{d.user}</h1>
                   </div>
                   {d.response === "" ? (
                     <div className='flex justify-start flex-row items-start'>
@@ -184,18 +263,24 @@ const Chat = () => {
             }
           </div>
         </div>
-        <div className="w-full flex justify-center items-center flex-row gap-x-2 p-4">
-          <IoMdAttach className="text-3xl text-theme cursor-pointer" />
+        <div className={`w-full flex justify-center items-center flex-row gap-x-2 p-4 ${mainTheme === "Dark" ? "bg-[#212121]" : "bg-theme"}`}>
+          {
+            voice === false ? (
+              <FaMicrophone className="text-3xl text-theme cursor-pointer" onClick={startvoice} />
+            ) : (
+              <FaRegCircleStop className="text-3xl cursor-pointer text-red-600" onClick={stopvoice} />
+            )
+          }
           <input
             type="text"
-            className={`focus:outline-none placeholder:text-gray-600 lg:w-7/12 w-4/5 px-4 py-4 rounded-full ${theme} input-container`}
+            className={`focus:outline-none placeholder:text-gray-600 lg:w-7/12 w-4/5 px-4 py-4 rounded-full ${mainTheme === "Dark" ? "bg-[#2f2f2f]" : theme} input-container`}
             placeholder="Type Message"
             onChange={handleMessage}
             value={userMessage}
-            style={{
-              backgroundColor: 'var(--input-bg-color)',
-              color: 'black'
-            }}
+            // style={{
+            //   backgroundColor: 'var(--input-bg-color)',
+            //   color: 'black'
+            // }}
           />
           <BiSend onClick={sendMessage} className="text-3xl text-theme cursor-pointer" />
         </div>

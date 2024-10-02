@@ -7,8 +7,10 @@ import Home from './Pages/Home';
 import BaseLayout from "./BaseLayout"
 import Chat from './Pages/Chat';
 import Login from './Pages/Login';
-import {MyContext, UserProvider} from "./Context/MyContext"
 import Profile from './Pages/Profile';
+import { Provider } from 'react-redux';
+import store from "./Redux/store"
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,18 +20,20 @@ const router = createBrowserRouter(
     <Route>
       <Route path='/' element={<BaseLayout />} >
         <Route path='' element={<Home />} />
-        <Route path='chat/:id' element={<Chat/>} />
-        <Route path='login' element={<Login/>} />
-        <Route path='profile' element={<Profile/>} />
+        <Route path='chat/:id' element={<Chat />} />
+        <Route path='login' element={<Login />} />
+        <Route path='profile' element={<Profile />} />
       </Route>
     </Route>
   )
 )
 root.render(
   <React.StrictMode>
-    <UserProvider>
-    <RouterProvider router={router} />
-    </UserProvider>
+    {/* <UserProvider> */}
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+    {/* </UserProvider> */}
   </React.StrictMode>
 );
 

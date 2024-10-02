@@ -9,6 +9,8 @@ import Chat from './Pages/Chat';
 import Login from './Pages/Login';
 import {MyContext, UserProvider} from "./Context/MyContext"
 import Profile from './Pages/Profile';
+import Dasboard from './Pages/Dasboard';
+import Appointment from './Pages/Appointment';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,6 +20,8 @@ const router = createBrowserRouter(
     <Route>
       <Route path='/' element={<BaseLayout />} >
         <Route path='' element={<Home />} />
+        <Route path='dashboard' element={<Dasboard />} />
+        <Route path='appointment' element={<Appointment />} />
         <Route path='chat/:id' element={<Chat/>} />
         <Route path='login' element={<Login/>} />
         <Route path='profile' element={<Profile/>} />
